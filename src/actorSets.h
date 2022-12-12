@@ -25,6 +25,7 @@ Actor* twoBody(Actor* actors) {
 	//	Terra
 	Actor terra;
 	terra = terra(terra);
+	terra.vel = createVector(0, 0, 0);
 	actors[1] = terra;
 
 

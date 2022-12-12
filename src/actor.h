@@ -32,6 +32,7 @@ struct Actors {
 	Vector pos;
 	Vector vel;
 	Vector acc;
+	Vector fakeAcc; //	Used because acc is reset before each print-out
 };
 
 typedef struct Actors Actor;
@@ -67,6 +68,13 @@ Actor createActor(char* actorName, double inMass, double inRadius) {
 	return act;
 }
 
+void adjustAcc(Actor a, Vector v) {
+	a.acc.x = v.x;
+	a.acc.y = v.y;
+	a.acc.z = v.z;
+
+	a.acc = v;
+}
 
 //		END initialisation
 
@@ -74,20 +82,21 @@ Actor createActor(char* actorName, double inMass, double inRadius) {
 
 //		BEGIN actor functions
 
-void accOnVel(Actor a, double timeStep) {
-	a.vel.x += a.acc.x * timeStep;
-	a.vel.y += a.acc.y * timeStep;
-	a.vel.z += a.acc.z * timeStep;
+void accOnVel(Actor* actors, int i, double timeStep) {
+	actors[i].vel.x += actors[i].acc.x * timeStep;
+	actors[i].vel.y += actors[i].acc.y * timeStep;
+	actors[i].vel.z += actors[i].acc.z * timeStep;
 }
 
-void velOnPos(Actor a, double timeStep) {
-	a.pos.x += a.vel.x * timeStep;
-	a.pos.y += a.vel.y * timeStep;
-	a.pos.z += a.vel.z * timeStep;
+void velOnPos(Actor* actors, int i, double timeStep) {
+	actors[i].pos.x += actors[i].vel.x * timeStep;
+	actors[i].pos.y += actors[i].vel.y * timeStep;
+	actors[i].pos.z += actors[i].vel.z * timeStep;
 }
 
-void resetAcc(Actor a) {
-	a.acc = createVector(0, 0, 0);
+void resetAcc(Actor* actors, int i) {
+	actors[i].fakeAcc = actors[i].acc;
+	actors[i].acc = createVector(0, 0, 0);
 }
 
 //		END actor functions
@@ -111,7 +120,7 @@ void printActor(Actor actor) {
 	printVector(actor.vel);
 
 	printf("\tAcceleration:\t");
-	printVector(actor.acc);
+	printVector(actor.fakeAcc);
 }
 //		END print functions
 

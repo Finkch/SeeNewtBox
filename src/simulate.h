@@ -14,10 +14,10 @@
 
 
 //	Calculates the gravity between a pair of actors
-void simulatePair(Actor a, Actor b) {
+void simulatePair(Actor* actors, int i, int j) {
 
 	//	The displacement from a to b
-	Vector ab = createVector(b.pos.x - a.pos.x, b.pos.y - a.pos.y, b.pos.z - a.pos.z);
+	Vector ab = createVector(actors[j].pos.x - actors[i].pos.x, actors[j].pos.y - actors[i].pos.y, actors[j].pos.z - actors[i].pos.z);
 
 
 	//	The displacement from b to a
@@ -30,29 +30,23 @@ void simulatePair(Actor a, Actor b) {
 
 
 	//	Calculates the force on each actor
-	double force = G * a.mass * b.mass / pow(distance, 2);
+	double force = G * actors[i].mass * actors[j].mass / pow(distance, 2);
 
 
 	//	Creates the acceleration vectors
-	Vector aAcc = scalarToVector(force / a.mass, ab);
-	Vector bAcc = scalarToVector(force / b.mass, ba);
+	Vector aAcc = scalarToVector(force / actors[i].mass, ab);
+	Vector bAcc = scalarToVector(force / actors[j].mass, ba);
 
-	a.acc.x = aAcc.x;
-	a.acc.y = aAcc.y;
-	a.acc.z = aAcc.z;
+	actors[i].acc = aAcc;
+	actors[j].acc = bAcc;
 
-
-	b.acc = bAcc;
-
-	printf("simAcc:\t%e, %e, %e\n", aAcc.x, aAcc.y, aAcc.z);
-	printf("aAcc:\t%e, %e, %e\n", a.acc.x, a.acc.y, a.acc.z);
 }
 
 //	Considers every pair of actors
 void simulate(Actor* actors, int len) {
 	for (int i = 0; i < len - 1; i++)
 		for (int j = i + 1; j < len; j ++)
-			simulatePair(actors[i], actors[j]);
+			simulatePair(actors, i, j);
 }
 
 //	Sets up a round of simulations
@@ -62,25 +56,19 @@ void gravity(Actor* actors, int len, double timeStep) {
 	simulate(actors, len);
 
 
-	for (int i = 0; i < len; i++) {
-		Actor a = actors[i];
-		printf("\nRAcc, %s:\t%e, %e, %e\n\n", a.name, a.acc.x, a.acc.y, a.acc.z);
-	}
-
-
 	//	Applies acceleration onto velocity
 	for (int i = 0; i < len; i++)
-		accOnVel(actors[i], timeStep);
+		accOnVel(actors, i, timeStep);
 
 
 	//	Applies velocity onto position
 	for (int i = 0; i < len; i++)
-		velOnPos(actors[i], timeStep);
+		velOnPos(actors, i, timeStep);
 
 
 	//	Resets the acceleration for each actor
 	for (int i = 0; i < len; i++)
-		resetAcc(actors[i]);
+		resetAcc(actors, i);
 
 }
 

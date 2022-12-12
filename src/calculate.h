@@ -40,8 +40,6 @@ Vector scalarToVector(double scalar, Vector vector) {
 	if (vector.z <= 0)
 		a.z *= -1;
 
-	printf("calcAcc:\t%e, %e, %e\n", a.x, a.y, a.z);
-
 	return a;
 }
 

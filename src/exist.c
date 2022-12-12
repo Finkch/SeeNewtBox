@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
 #include "actor.h"
 #include "calculate.h"
 #include "simulate.h"
@@ -19,6 +20,7 @@
 //	isn't being copied back. I think it is an
 //	issue with references and scope. Yet, those
 //	fixes don't seem to work. Feh.
+//
 //	Yeah, it's almost certainly pointers.
 
 
@@ -42,12 +44,10 @@ int main() {
 
 	//	The time simulated every step
 	//	In seconds
-	double timeStep = 1000;
+	double timeStep = 1e4;
 
 	//	Simulates and prints out
-	for (int i = 0; i < 10; i++) {
-
-		printf("\n\t- Begin round! -\n");
+	for (int i = 0; i < 10e4; i++) {
 
 
 		//	Does a step
@@ -56,7 +56,8 @@ int main() {
 		//	Gives a print-out of an actor
 		printout(actors, len);
 
-		printf("\n\t- End round! -\n");
+		//	The factor of 1000 puts it into milliseconds
+		usleep(160 * 1000);
 
 	}
 
